@@ -4,6 +4,10 @@ from pandasql import sqldf
 import numpy as np
 import matplotlib.pyplot as plt
 
+```
+
+
+```python
 
 ```
 
@@ -11,28 +15,7 @@ import matplotlib.pyplot as plt
 ```python
 sql = lambda q: sqldf(q, globals())
 df = pd.read_csv("athlete_events.csv")
-df.columns
-```
 
-
-
-
-    Index(['ID', 'Name', 'Sex', 'Age', 'Height', 'Weight', 'Team', 'NOC', 'Games',
-           'Year', 'Season', 'City', 'Sport', 'Event', 'Medal'],
-          dtype='object')
-
-
-
-
-```python
-def fun(bbd):
-    qry =sql('''
-    SELECT
-    *
-    FROM  df
-    LIMIT 5
-    '''.format(df = varname(bbd)))
-    return qry
 ```
 
 
@@ -472,8 +455,7 @@ joinMF = joinMF[~joinMF['div'].isnull()]
 
 
 ```python
-joinMF50 = joinMF.head(50)
-joinMF50 = joinMF50.sort_values(by='div', ascending=False)
+joinMF50 = joinMF.sort_values(by='div', ascending=False).head(50)
 ```
 
 
@@ -494,67 +476,7 @@ plt.show()
 
 ```python
 teamByYear = pd.DataFrame(Male.groupby(['Team','Year']).count()['ID'])
-teamByYear.head()
 ```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th></th>
-      <th>ID</th>
-    </tr>
-    <tr>
-      <th>Team</th>
-      <th>Year</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Acipactli</th>
-      <th>1964</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th rowspan="4" valign="top">Afghanistan</th>
-      <th>1960</th>
-      <td>16</td>
-    </tr>
-    <tr>
-      <th>1964</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>1968</th>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>1972</th>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 
 ```python
@@ -649,6 +571,175 @@ barplot('Venezuela')
 
     
 ![png](output_29_0.png)
+    
+
+
+
+```python
+countries = ['Kuwait','Pakistan','SaudiArabia','Qatar','Iraq','Oman','SouthVietnam','UnitedArabEmirates']
+```
+
+
+```python
+fig, ax = plt.subplots(2,4, figsize=(15,9))
+fig.suptitle('Countries')
+for i,j in zip(countries,list(product(range(0,2,1),range(0,4,1)))):
+    country= teambycountry(i)
+    ax[j].bar(country.Year, country['Male'])
+    ax[j].bar(country.Year, country['Female'])
+    ax[j].set_title('{}'.format(i))
+   
+    
+```
+
+
+    
+![png](output_31_0.png)
+    
+
+
+
+```python
+joinMF50 = joinMF.sort_values(by='div', ascending=True).head(50)
+joinMF50.head(10)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Team</th>
+      <th>Mcount</th>
+      <th>Fcount</th>
+      <th>diference</th>
+      <th>div</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>276</th>
+      <td>Kosovo</td>
+      <td>3</td>
+      <td>5</td>
+      <td>-2</td>
+      <td>0.60</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>China</td>
+      <td>2199</td>
+      <td>2679</td>
+      <td>-480</td>
+      <td>0.82</td>
+    </tr>
+    <tr>
+      <th>203</th>
+      <td>Palau</td>
+      <td>11</td>
+      <td>13</td>
+      <td>-2</td>
+      <td>0.85</td>
+    </tr>
+    <tr>
+      <th>220</th>
+      <td>MarshallIslands</td>
+      <td>6</td>
+      <td>7</td>
+      <td>-1</td>
+      <td>0.86</td>
+    </tr>
+    <tr>
+      <th>216</th>
+      <td>CapeVerde</td>
+      <td>8</td>
+      <td>9</td>
+      <td>-1</td>
+      <td>0.89</td>
+    </tr>
+    <tr>
+      <th>109</th>
+      <td>Angola</td>
+      <td>122</td>
+      <td>123</td>
+      <td>-1</td>
+      <td>0.99</td>
+    </tr>
+    <tr>
+      <th>244</th>
+      <td>TimorLeste</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>435</th>
+      <td>Twinkle</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <th>198</th>
+      <td>SaintLucia</td>
+      <td>14</td>
+      <td>13</td>
+      <td>1</td>
+      <td>1.08</td>
+    </tr>
+    <tr>
+      <th>126</th>
+      <td>Vietnam</td>
+      <td>77</td>
+      <td>69</td>
+      <td>8</td>
+      <td>1.12</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+countries = ['China','Palau','MarshallIslands','CapeVerde','Angola','TimorLeste','SaintLucia','Vietnam']
+```
+
+
+```python
+fig, ax = plt.subplots(2,4, figsize=(15,9))
+fig.suptitle('Countries')
+for i,j in zip(countries,list(product(range(0,2,1),range(0,4,1)))):
+    country= teambycountry(i)
+    ax[j].bar(country.Year, country['Male'], label='Male')
+    ax[j].bar(country.Year, country['Female'],label='Female ')
+    ax[j].set_title('{}'.format(i))
+    ax[j].legend()
+   
+```
+
+
+    
+![png](output_34_0.png)
     
 
 
