@@ -4,11 +4,7 @@ from pandasql import sqldf
 import numpy as np
 import matplotlib.pyplot as plt
 
-```
-
-
-```python
-
+from itertools import product
 ```
 
 
@@ -17,6 +13,8 @@ sql = lambda q: sqldf(q, globals())
 df = pd.read_csv("athlete_events.csv")
 
 ```
+
+### Clean
 
 
 ```python
@@ -29,6 +27,9 @@ def clean(bbd:str,columns:list):
     return qry
 ```
 
+in this report, we going to explain how can to see  discrimination of gender in sports in the previous years,
+To beginning, we going to exclude from the analysis the names of participants as this will be not relevant for the report, also going to make cleaning to different columns that have inconsistencies in their values, for example, the column Team has the same teams with different names.
+
 
 ```python
 columns = 'ID','Sex','Age','Height','Weight','Team','Year','Season','City','Sport'
@@ -36,6 +37,8 @@ newdf = clean('df',columns)
 newdf = newdf.dropna(subset=['Age','Height','Weight'])
 newdf.Team= newdf.Team.str.replace('[\d+\W]','', regex=True)
 ```
+
+we Going to make a function that separates genders in two data frames, it is to make an analysis without bias for gender. 
 
 
 ```python
@@ -60,7 +63,8 @@ print(' Shape Male DataFrame {} \n Shape Female DataFrame {}'.format(Male.shape,
      Shape Female DataFrame (66711, 10)
     
 
-### Male
+In this step we did a function to count the frequency of values in different column, in the next step is possible to see, a table with frequentist of age by gender.
+
 
 
 ```python
@@ -171,21 +175,27 @@ count.sort_values(by='Age', ascending=False)
 
 
 
+#### Distribution of age by gender.
+
 
 ```python
 fig, ax = plt.subplots()
 M = ax.bar(countageM['Age'],countageM['count'], label='Male', alpha=0.6)
 F = ax.bar(countageF['Age'], countageF['count'], label='Female', alpha=0.6)
 ax.legend()
+plt.title('Distribution of age by gender')
 plt.grid()
 plt.show()
 ```
 
 
     
-![png](output_10_0.png)
+![png](output_13_0.png)
     
 
+
+#### Stast 
+How is the minimum age of participation in Male, what is average, how will be max? this is the same for Women, those questions will be answered in the next block with this function. 
 
 
 ```python
@@ -273,6 +283,8 @@ def stastplot(df:pd.DataFrame):
     
 ```
 
+#### Stastplot
+
 
 ```python
 stastplot(summary)
@@ -280,119 +292,12 @@ stastplot(summary)
 
 
     
-![png](output_14_0.png)
+![png](output_19_0.png)
     
 
 
-
-```python
-Male.head()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ID</th>
-      <th>Sex</th>
-      <th>Age</th>
-      <th>Height</th>
-      <th>Weight</th>
-      <th>Team</th>
-      <th>Year</th>
-      <th>Season</th>
-      <th>City</th>
-      <th>Sport</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>M</td>
-      <td>24.0</td>
-      <td>180.0</td>
-      <td>80.0</td>
-      <td>China</td>
-      <td>1992</td>
-      <td>Summer</td>
-      <td>Barcelona</td>
-      <td>Basketball</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2</td>
-      <td>M</td>
-      <td>23.0</td>
-      <td>170.0</td>
-      <td>60.0</td>
-      <td>China</td>
-      <td>2012</td>
-      <td>Summer</td>
-      <td>London</td>
-      <td>Judo</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>6</td>
-      <td>M</td>
-      <td>31.0</td>
-      <td>188.0</td>
-      <td>75.0</td>
-      <td>UnitedStates</td>
-      <td>1992</td>
-      <td>Winter</td>
-      <td>Albertville</td>
-      <td>Cross Country Skiing</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>6</td>
-      <td>M</td>
-      <td>31.0</td>
-      <td>188.0</td>
-      <td>75.0</td>
-      <td>UnitedStates</td>
-      <td>1992</td>
-      <td>Winter</td>
-      <td>Albertville</td>
-      <td>Cross Country Skiing</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>6</td>
-      <td>M</td>
-      <td>31.0</td>
-      <td>188.0</td>
-      <td>75.0</td>
-      <td>UnitedStates</td>
-      <td>1992</td>
-      <td>Winter</td>
-      <td>Albertville</td>
-      <td>Cross Country Skiing</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+#### Count Sex by Team
+In this step we want to answer the question about what are the teams with more and fewer participants by gender, but for this, we can't simply compare columns, we going to create an index that will be a relation between quantity men vs women, this way we could know what are countries whit the same relative participation (values near to 0, or unequal participation (values most to 1)
 
 
 ```python
@@ -458,6 +363,10 @@ joinMF = joinMF[~joinMF['div'].isnull()]
 joinMF50 = joinMF.sort_values(by='div', ascending=False).head(50)
 ```
 
+Here we can see that the countries with the higher index or unequal participation by gender are countries with association cultures where women have low participation in activities.
+
+### Plot relation between men vs women
+
 
 ```python
 plt.figure(figsize=(12,6))
@@ -469,8 +378,11 @@ plt.show()
 
 
     
-![png](output_21_0.png)
+![png](output_28_0.png)
     
+
+
+How the participation has affected by year? is there countries with improvements in its political for partipation inclusive of all sex?
 
 
 
@@ -565,17 +477,6 @@ def barplot(df):
 
 
 ```python
-barplot('Venezuela')
-```
-
-
-    
-![png](output_29_0.png)
-    
-
-
-
-```python
 countries = ['Kuwait','Pakistan','SaudiArabia','Qatar','Iraq','Oman','SouthVietnam','UnitedArabEmirates']
 ```
 
@@ -589,14 +490,16 @@ for i,j in zip(countries,list(product(range(0,2,1),range(0,4,1)))):
     ax[j].bar(country.Year, country['Female'])
     ax[j].set_title('{}'.format(i))
    
-    
+
 ```
 
 
     
-![png](output_31_0.png)
+![png](output_38_0.png)
     
 
+
+In the previous graph is possible to see that any countries in particular currently yet there is discrimination in the participation of women in sports, with gaps very  pronounced
 
 
 ```python
@@ -739,11 +642,180 @@ for i,j in zip(countries,list(product(range(0,2,1),range(0,4,1)))):
 
 
     
-![png](output_34_0.png)
+![png](output_42_0.png)
     
+
+
+on the other hand, also there is countries where the participation of women is more that men.
+
+### CORRELATION 
+
+
+```python
+def encoding():
+    df = sql('''
+    SELECT
+    Age,
+    Height,
+    Weight,
+    Year,
+    Season,
+    City,
+    Sport,
+    CASE
+        WHEN Sex='M' THEN 1
+        ELSE 0
+        END AS Gender,
+    CASE
+        WHEN Season='Summer' THEN 1
+        ELSE 0
+        END AS Seasonn
+    FROM newdf''')
+    return df
+newdf=encoding()
+```
+
+Now we going to show the correlation between columns and to see if is possible to find any relation between columns and gender, I mean,is the year participation a deteminant for inclusion of women in sport? 
 
 
 
 ```python
-
+from sklearn.preprocessing import OrdinalEncoder
+column = newdf[['City','Sport']]
+enc =  OrdinalEncoder()
+epa = enc.fit_transform(column)
+newdf = newdf.drop(column,axis=1).merge(pd.DataFrame(epa, columns=['City','Sport']), on=newdf.index)
+newdf.head()
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key_0</th>
+      <th>Age</th>
+      <th>Height</th>
+      <th>Weight</th>
+      <th>Year</th>
+      <th>Season</th>
+      <th>Gender</th>
+      <th>Seasonn</th>
+      <th>City</th>
+      <th>Sport</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>24.0</td>
+      <td>180.0</td>
+      <td>80.0</td>
+      <td>1992</td>
+      <td>Summer</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5.0</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>23.0</td>
+      <td>170.0</td>
+      <td>60.0</td>
+      <td>2012</td>
+      <td>Summer</td>
+      <td>1</td>
+      <td>1</td>
+      <td>17.0</td>
+      <td>26.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>21.0</td>
+      <td>185.0</td>
+      <td>82.0</td>
+      <td>1988</td>
+      <td>Winter</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.0</td>
+      <td>43.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>21.0</td>
+      <td>185.0</td>
+      <td>82.0</td>
+      <td>1988</td>
+      <td>Winter</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.0</td>
+      <td>43.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>25.0</td>
+      <td>185.0</td>
+      <td>82.0</td>
+      <td>1992</td>
+      <td>Winter</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>43.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+import seaborn as sns
+def corr(df):
+    corr = df.drop(['key_0','Season'],axis=1).corr()
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+    f, ax = plt.subplots(figsize=(11, 9))
+    cmap = sns.diverging_palette(230, 20, as_cmap=True)
+    sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    plt.title('Correlation Matrix')
+    plt.show()
+```
+
+In the next graph is possible to see that if there is a mild relation between year and its influence on Gender, but this is not sufficient to explain discrimination for women in sports.
+
+
+```python
+corr(newdf)
+```
+
+
+    
+![png](output_50_0.png)
+    
+
